@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue("FARMER")
-@Table(name = "farmers")
+//@Table(name = "farmers")
 public class Farmer extends User implements Serializable {
     
     @OneToMany(mappedBy = "farmer", cascade = CascadeType.ALL, orphanRemoval = true)

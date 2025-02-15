@@ -1,9 +1,9 @@
 package edu.kingston.agriconnect.dto;
 
-public class UserUpdateDto {
+import lombok.Data;
 
-    private int id;
-    private String name;
+@Data
+public class UserLoginDTO {
     private String email;
     private String password;
 }

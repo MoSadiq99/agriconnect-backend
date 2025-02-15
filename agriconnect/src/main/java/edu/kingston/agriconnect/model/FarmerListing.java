@@ -19,9 +19,9 @@ public class FarmerListing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "farmer_id", referencedColumnName = "id", nullable = false)
-    private User farmer;
+//    @ManyToOne
+//    @JoinColumn(name = "farmer_id", referencedColumnName = "id", nullable = false)
+//    private User farmer;
 
     @ManyToOne
     @JoinColumn(name = "cultivation_id", referencedColumnName = "id", nullable = false)

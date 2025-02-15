@@ -22,7 +22,7 @@ public class FarmerCultivation {
 
     @ManyToOne
     @JoinColumn(name = "farmer_id", referencedColumnName = "id", nullable = false)
-    private Farmer farmer;
+    private User farmer;
 
     private String cropType;
     private LocalDate cultivationDate;

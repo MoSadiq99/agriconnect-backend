@@ -1,11 +1,19 @@
 spring:
-  application:
-    name: agriconnect
-  datasource:
-    url: jdbc:postgresql://localhost:5432/agriconnect
-    username: postgres
-    password: 12345
-  jpa:
-    hibernate:
-      ddl-auto: update
-      show-sql: true
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 50MB
+
+Springdoc:
+  default-produces-media-type: application/json
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+
+#server:
+#  servlet:
+#    context-path: /api/v1/

@@ -3,17 +3,16 @@ package edu.kingston.agriconnect.controller;
 import edu.kingston.agriconnect.model.Certification;
 import edu.kingston.agriconnect.service.CertificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/certifications")
+@RequestMapping("api/certifications")
 @RequiredArgsConstructor
 public class CertificationController {
 
-    private CertificationService certificationService;
+    private final CertificationService certificationService;
 
     @PostMapping("/certify/{farmerId}")
     public Certification certifyFarmer(@PathVariable Long farmerId,
