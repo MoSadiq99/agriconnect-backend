@@ -1,15 +1,11 @@
 package edu.kingston.agriconnect.service;
 
 import edu.kingston.agriconnect.model.BuyerRequest;
-import edu.kingston.agriconnect.model.FarmerListing;
-import edu.kingston.agriconnect.model.enums.RequestType;
 import edu.kingston.agriconnect.repository.BuyerRequestRepository;
 import edu.kingston.agriconnect.repository.FarmerListingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -23,7 +19,6 @@ public class MarketplaceService {
     public BuyerRequest addBuyerRequest(BuyerRequest request) {
         return buyerRequestRepository.save(request);
     }
-
 
 
     public List<BuyerRequest> getAllRequests() {

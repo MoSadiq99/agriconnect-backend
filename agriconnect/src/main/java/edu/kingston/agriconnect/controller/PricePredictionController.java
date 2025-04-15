@@ -7,14 +7,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class RicePricePredictionController {
+public class PricePredictionController {
 
-    private final RicePricePredictionService ricePricePredictionService;
+    private final RicePricePredictionService pricePredictionService;
 
     @PostMapping("/predict")
     public Map<String, Double> predictRicePrice(@RequestBody Map<String, Object> requestBody) {
@@ -24,7 +25,7 @@ public class RicePricePredictionController {
             double exchangeRate = parseDouble(requestBody.get("exchangeRate"), "Exchange Rate");
             double fuelPrice = parseDouble(requestBody.get("fuelPrice"), "Fuel Price");
 
-            return ricePricePredictionService.predictPrice(month, exchangeRate, fuelPrice);
+            return pricePredictionService.predictPrice(month, exchangeRate, fuelPrice);
         } catch (IllegalArgumentException e) {
             return Map.of("error", -1.0); // Return an error response
         }

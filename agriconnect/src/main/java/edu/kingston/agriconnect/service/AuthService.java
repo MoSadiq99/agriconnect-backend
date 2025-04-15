@@ -1,7 +1,7 @@
 package edu.kingston.agriconnect.service;
 
-import edu.kingston.agriconnect.dto.UserLoginDTO;
 import edu.kingston.agriconnect.dto.LoginResponse;
+import edu.kingston.agriconnect.dto.UserLoginDTO;
 import edu.kingston.agriconnect.dto.UserRegisterDTO;
 import edu.kingston.agriconnect.model.*;
 import edu.kingston.agriconnect.model.enums.RoleName;
@@ -13,14 +13,16 @@ import edu.kingston.agriconnect.security.JwtService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -31,32 +33,31 @@ public class AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtTokenProvider;
+    private final JwtService jwtService;
     private final TokenRepository tokenRepository;
+    private final AuthenticationManager authenticationManager;
     private final Logger log = Logger.getLogger(AuthService.class.getName());
 //    private final EmailService emailService;
+
+    @Value("${spring.application.mailing.frontend.activation-url}")
+    private String activationUrl;
+
     @Transactional
     public LoginResponse authenticateUser(UserLoginDTO loginRequest) {
 
-        // Log the incoming request
-        System.out.println("Received login request: " + loginRequest.getEmail());
-        // Step 1: Check if the user exists
-        User user = userRepository.findByEmailEager(loginRequest.getEmail());
-        log.info("User: role {} " + user.getRoles());
-        // Step 2: Validate password
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
-        }
-//        Optional<Role> roleOpt =  roleRepository.findByRoleNameEager(RoleName.ROLE_FARMER.name());
-//        roleOpt.get().getUsers();
-        // Step 3: Generate JWT token
-//        String token = jwtTokenProvider.generateToken((UserDetails) user);
+        var auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
+        );
 
-        String token = "token";
-        // Step 4: Return login response with token
-        System.out.println("Generated token: " + token);
-        System.out.println("User roles: " + user.getRoles());
-        return new LoginResponse(token, user.getId(), user.getEmail(), user.getRoles().stream().map(Role::getRoleName).toArray(String[]::new));
+        var claims = new HashMap<String, Object>();
+        var user = (User) auth.getPrincipal();
+        claims.put("id", user.getId());
+        var jwtToken = jwtService.generateToken(claims, user);
+
+        return new LoginResponse(jwtToken, user.getId(), user.getEmail(), user.getRoles().stream().map(Role::getRoleName).toArray(String[]::new));
     }
 
     public void registerUser(@Valid UserRegisterDTO dto) {
@@ -83,6 +84,8 @@ public class AuthService {
         user.setAddress(dto.getAddress());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
+        user.setAccountLocked(false);
+        user.setEnabled(false);
 
         // Set roles
         Set<Role> roles = new HashSet<>();
@@ -97,15 +100,23 @@ public class AuthService {
         userRepository.save(user);
 
         // Send validation email
-        sendValidationEmail(user);
+//        sendValidationEmail(user);
     }
 
-    private void sendValidationEmail(User user) {
-        var newToken = generateAndSaveActivationToken(user);
-
-        // Send email
-
-    }
+//    private void sendValidationEmail(User user) throws MessagingException {
+//        var newToken = generateAndSaveActivationToken(user);
+//
+//        emailService.sendEmail(
+//                user.getEmail(),
+//                user.getName(),
+//                EmailTemplateName.ACTIVATE_ACCOUNT,
+//                activationUrl,
+//                newToken,
+//                "Activate your account"
+//
+//        );
+//
+//    }
 
     private String generateAndSaveActivationToken(User user) {
         // Generate token
@@ -118,7 +129,6 @@ public class AuthService {
                 .build();
         tokenRepository.save(token);
         return generatedToken;
-
     }
 
     private String generateActivationCode(int length) {
@@ -130,6 +140,20 @@ public class AuthService {
             codeBuilder.append(characters.charAt(randomIndex));
         }
         return codeBuilder.toString();
+    }
+
+    // ToDO - Account activation through email
+    @Transactional
+    public void activateAccount(String token) {
+        Token savedToken = tokenRepository.findByToken(token);
+        if (savedToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Token expired");
+        }
+        User user = savedToken.getUser();
+        user.setEnabled(true);
+        userRepository.save(user);
+        savedToken.setValidatedAt(LocalDateTime.now());
+        tokenRepository.save(savedToken);
     }
 }
 

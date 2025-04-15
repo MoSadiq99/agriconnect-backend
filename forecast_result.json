@@ -1,0 +1,22 @@
+{
+  "status": "success",
+  "forecast_period": {
+    "start": "2025-06-07",
+    "end": "2025-06-21",
+    "expected_harvest_date": "2025-06-14"
+  },
+  "supply_demand_summary": {
+    "tomato": {
+      "total_supply": 0.0,
+      "total_demand": 1928.5714285714284,
+      "demand_supply_gap": 1928.5714285714284
+    }
+  },
+  "recommendation": {
+    "crop_type": "tomato",
+    "recommendation": "Proceed with cultivation",
+    "reason": "No other farmers are cultivating tomato in this period, but demand exists (1928.57 kg). Your 400.00 kg could meet this need.",
+    "confidence": 0.7,
+    "data_availability": "demand_only"
+  }
+}

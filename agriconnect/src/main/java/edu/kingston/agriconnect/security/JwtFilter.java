@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +21,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private MyUserDetailsService userDetailsService;
+    private final MyUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(
@@ -30,12 +31,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
     ) throws ServletException, IOException {
 
-        if (request.getServletPath().contains("/api/**")) { //! for testing
-            filterChain.doFilter(request, response);
-        }
-        if (request.getServletPath().contains("/api/auth/**")) {
-            filterChain.doFilter(request, response);
-        }
+//        if (request.getServletPath().contains("/api/**")) { //! for testing
+//            filterChain.doFilter(request, response);
+//        }
+//        if (request.getServletPath().contains("/api/auth/**")) {
+//            filterChain.doFilter(request, response);
+//        }
 
         if (request.getServletPath().contains("/v2/api-docs")) {
             filterChain.doFilter(request, response);
@@ -68,7 +69,7 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }
 
-        final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String jwt;
         final String userEmail;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {

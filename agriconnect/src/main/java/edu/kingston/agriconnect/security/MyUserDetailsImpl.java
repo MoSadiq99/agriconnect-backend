@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class UserDetailsImpl implements UserDetails {
+public class MyUserDetailsImpl implements UserDetails {
     private final User user;
 
     @Override

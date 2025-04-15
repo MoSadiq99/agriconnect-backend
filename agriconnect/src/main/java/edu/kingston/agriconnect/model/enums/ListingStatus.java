@@ -1,7 +1,8 @@
 package edu.kingston.agriconnect.model.enums;
 
 public enum ListingStatus {
-    AVAILABLE,
+    ACTIVE,
     SOLD,
-    PENDING
+    PENDING,
+    EXPIRED
 }

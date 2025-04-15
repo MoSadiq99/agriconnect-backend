@@ -1,0 +1,21 @@
+{
+  "status": "success",
+  "forecast_period": {
+    "start": "2025-07-08",
+    "end": "2025-07-22",
+    "expected_harvest_date": "2025-07-15"
+  },
+  "supply_demand_summary": {
+    "tomatoes": {
+      "total_supply": 0.0,
+      "total_demand": 0.0,
+      "demand_supply_gap": 0.0
+    }
+  },
+  "recommendation": {
+    "crop_type": "tomatoes",
+    "recommendation": "Reconsider or reduce quantity",
+    "reason": "Supply (100.00 kg) exceeds demand (0.00 kg) by 100.00 kg; potential wastage risk",
+    "confidence": 1.0
+  }
+}

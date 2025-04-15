@@ -49,7 +49,7 @@ public class BuyerRequest {
     private String location;
 
     @NotNull(message = "Start date is required")
-    @FutureOrPresent(message = "Start date must be in the present or future")
+//    @FutureOrPresent(message = "Start date must be in the present or future")
     @Column(nullable = false)
     private LocalDate startDate;
 
@@ -79,4 +79,13 @@ public class BuyerRequest {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+//    @Column(name = "image_url")
+//    private String imageUrl;
+
+    @Column(name = "rating")
+    private Integer rating;
+
+    @Column(name = "in_wishlist")
+    private Boolean inWishlist;
 }

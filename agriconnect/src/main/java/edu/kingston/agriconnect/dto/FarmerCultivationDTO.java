@@ -8,7 +8,8 @@ import java.time.LocalDate;
 
 @Data
 public class FarmerCultivationDTO implements Serializable {
-    private Long farmerId;  // Only accept the ID
+    private Long id;
+    private Long farmerId;
     private String cropType;
     private LocalDate cultivationDate;
     private LocalDate harvestDate;
@@ -17,4 +18,5 @@ public class FarmerCultivationDTO implements Serializable {
     private String expectedYield;
     private FarmingMethod methodOfCultivation;
     private String description;
+    private boolean isPublished;
 }

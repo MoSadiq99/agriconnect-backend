@@ -14,7 +14,7 @@ public class RicePricePredictionService {
 
     public Map<String, Double> predictPrice(int month, double exchangeRate, double fuelPrice) {
         // Calculate lagged features and rolling averages (example logic)
-        double exchangeRateLag1 = exchangeRate * 0.95; // Example: 5% decrease
+        double exchangeRateLag1 = exchangeRate * 1.1; // Example: 10% increase
         double fuelPriceLag1 = fuelPrice * 1.05; // Example: 5% increase
         double exchangeRateRollingAvg = (exchangeRate + exchangeRateLag1) / 2;
         double fuelPriceRollingAvg = (fuelPrice + fuelPriceLag1) / 2;

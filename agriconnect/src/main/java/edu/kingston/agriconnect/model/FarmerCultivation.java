@@ -1,6 +1,5 @@
 package edu.kingston.agriconnect.model;
 
-
 import edu.kingston.agriconnect.model.enums.FarmingMethod;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,10 +16,11 @@ import java.time.LocalDate;
 @Table(name = "farmer_cultivations")
 public class FarmerCultivation {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "farmer_id", referencedColumnName = "id", nullable = false)
     private User farmer;
 
@@ -32,6 +32,7 @@ public class FarmerCultivation {
     private String expectedYield;
     private FarmingMethod methodOfCultivation;
     private String description;
+    private boolean isPublished;
 }
 
 
