@@ -1,2 +1,4 @@
 
 .qodo
+agriconnect/src/main/resources/application.yml
+agriconnect/src/main/resources/application-dev.yml
