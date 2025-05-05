@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/AgriConnectBackend.iml" filepath="$PROJECT_DIR$/.idea/AgriConnectBackend.iml" />
-      <module fileurl="file://$PROJECT_DIR$/agriconnect/agriconnect.iml" filepath="$PROJECT_DIR$/agriconnect/agriconnect.iml" />
     </modules>
   </component>
 </project>

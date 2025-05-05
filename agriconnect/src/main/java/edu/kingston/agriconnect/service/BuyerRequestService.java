@@ -1,6 +1,9 @@
 package edu.kingston.agriconnect.service;
 
 import edu.kingston.agriconnect.dto.BuyerRequestDTO;
+import edu.kingston.agriconnect.exception.BusinessErrorCodes;
+import edu.kingston.agriconnect.exception.BusinessException;
+import edu.kingston.agriconnect.mapper.BuyerRequestMapper;
 import edu.kingston.agriconnect.model.BuyerRequest;
 import edu.kingston.agriconnect.model.User;
 import edu.kingston.agriconnect.repository.BuyerRequestRepository;
@@ -21,19 +24,19 @@ public class BuyerRequestService {
     private static final Logger logger = LoggerFactory.getLogger(BuyerRequestService.class);
     private final BuyerRequestRepository buyerRequestRepository;
     private final UserRepository userRepository;
-
+    private final BuyerRequestMapper mapper;
 
     public BuyerRequestDTO addBuyerRequest(BuyerRequestDTO dto) {
         if (dto.getStartDate().isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Start date cannot be in the past.");
         }
-
         User buyer = userRepository.findById(dto.getBuyerId())
-                .orElseThrow(() -> new RuntimeException("Buyer not found"));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCodes.BUYER_NOT_FOUND));
 
-        BuyerRequest buyerRequest = mapToEntity(dto, buyer);
+        BuyerRequest buyerRequest = mapper.toEntity(dto);
+        buyerRequest.setBuyer(buyer);
         BuyerRequest savedBuyerRequest = buyerRequestRepository.save(buyerRequest);
-        return mapToDTO(savedBuyerRequest);
+        return mapper.toDto(savedBuyerRequest);
     }
 
     private BuyerRequestDTO mapToDTO(BuyerRequest savedBuyerRequest) {

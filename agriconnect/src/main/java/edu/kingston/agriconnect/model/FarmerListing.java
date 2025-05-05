@@ -24,7 +24,7 @@ public class FarmerListing {
     @JoinColumn(name = "farmer_id", referencedColumnName = "id", nullable = false)
     private User farmer;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cultivation_id", referencedColumnName = "id", nullable = false)
     private FarmerCultivation cultivation;
 

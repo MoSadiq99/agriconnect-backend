@@ -4,13 +4,12 @@ import edu.kingston.agriconnect.dto.FarmerCultivationDTO;
 import edu.kingston.agriconnect.model.FarmerCultivation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface FarmerCultivationMapper {
-    FarmerCultivationMapper INSTANCE = Mappers.getMapper(FarmerCultivationMapper.class);
+//    FarmerCultivationMapper INSTANCE = Mappers.getMapper(FarmerCultivationMapper.class);
 
     @Mapping(target = "farmerId", source = "farmer.id")
     FarmerCultivationDTO toDto(FarmerCultivation entity);

@@ -2,6 +2,7 @@ package edu.kingston.agriconnect.service;
 
 import edu.kingston.agriconnect.dto.FarmerListingDTO;
 import edu.kingston.agriconnect.exception.BusinessException;
+import edu.kingston.agriconnect.mapper.FarmerListingMapper;
 import edu.kingston.agriconnect.model.BuyerRequest;
 import edu.kingston.agriconnect.model.FarmerCultivation;
 import edu.kingston.agriconnect.model.FarmerListing;
@@ -32,6 +33,7 @@ public class FarmerListingService {
     private final FarmerListingRepository farmerListingRepository;
     private final FarmerRepository farmerRepository;
     private final FarmerCultivationRepository farmerCultivationRepository;
+    private final FarmerListingMapper mapper;
 
     // Add a new farmer listing
     public FarmerListingDTO addFarmerListing(FarmerListingDTO dto) {
@@ -41,23 +43,25 @@ public class FarmerListingService {
         FarmerCultivation cultivation = farmerCultivationRepository.findById(dto.getCultivationId())
                 .orElseThrow(() -> new BusinessException(CULTIVATION_NOT_FOUND, "Cultivation not found with ID: " + dto.getCultivationId()));
 
-        FarmerListing listing = mapToEntity(dto, farmer, cultivation);
+        FarmerListing listing = mapper.toEntity(dto);
+        listing.setFarmer(farmer);
+        listing.setCultivation(cultivation);
         FarmerListing savedListing = farmerListingRepository.save(listing);
-        logger.debug("Saved farmer listing with ID: {}", savedListing.getId());
-        return mapToDTO(savedListing);
+
+        return mapper.toDto(savedListing);
     }
 
     // Get a single farmer listing by ID
-    public FarmerListing getFarmerListing(Long id) {
-        logger.info("Fetching farmer listing with ID: {}", id);
-        return farmerListingRepository.findById(id)
+    public FarmerListingDTO getFarmerListing(Long id) {
+        FarmerListing listing = farmerListingRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(FARMER_LISTING_NOT_FOUND, "Farmer listing not found with ID: " + id));
+        return mapper.toDto(listing);
     }
 
     // Find listings by crop type
-    public List<FarmerListing> findMatches(String cropType) {
-        logger.info("Finding listings for crop type: {}", cropType);
-        return farmerListingRepository.findByCropTypeIgnoreCase(cropType);
+    public List<FarmerListingDTO> findMatches(String cropType) {
+        List<FarmerListing> farmerListing = farmerListingRepository.findByCropTypeIgnoreCase(cropType);
+        return mapper.toDtoList(farmerListing);
     }
 
     // Find listings matching a buyer request
@@ -70,9 +74,9 @@ public class FarmerListingService {
     }
 
     // Get all farmer listings
-    public List<FarmerListing> getAllListings() {
-        logger.info("Fetching all farmer listings");
-        return farmerListingRepository.findAll();
+    public List<FarmerListingDTO> getAllListings() {
+        List<FarmerListing> farmerListings = farmerListingRepository.findAll();
+        return mapper.toDtoList(farmerListings);
     }
 
     // Update an existing farmer listing with null checks
@@ -94,23 +98,6 @@ public class FarmerListingService {
             throw new BusinessException(FARMER_LISTING_NOT_FOUND, "Farmer listing not found with ID: " + id);
         }
         farmerListingRepository.deleteById(id);
-    }
-
-    // Reusable method to map DTO to entity
-    private FarmerListing mapToEntity(FarmerListingDTO dto, User farmer, FarmerCultivation cultivation) {
-        FarmerListing listing = new FarmerListing();
-        listing.setCropType(dto.getCropType());
-        listing.setQuantity(dto.getQuantity());
-        listing.setUnit(dto.getUnit());
-        listing.setLocation(dto.getLocation());
-        listing.setPrice(dto.getPrice());
-        listing.setDescription(dto.getDescription());
-        listing.setAvailableDateFrom(dto.getAvailableDateFrom());
-        listing.setFarmer(farmer);
-        listing.setCultivation(cultivation);
-        listing.setStatus(dto.getStatus());
-        listing.setMethodOfCultivation(dto.getMethodOfCultivation());
-        return listing;
     }
 
     // Reusable method to map entity to DTO
